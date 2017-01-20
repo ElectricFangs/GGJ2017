@@ -6,10 +6,6 @@ public class SoundWaves : MonoBehaviour {
 
   private List<GameObject> waves = new List<GameObject>();
 
-  private void UpdateWaveColor(GameObject wave) {
-
-  }
-
   private void SetWaveSize(int i, float newSize) {
     waves[i].transform.localScale = new Vector3(newSize, newSize, 1);
 
