@@ -5,6 +5,7 @@ using UnityEngine;
 public class SoundWaves : MonoBehaviour {
 
   private List<GameObject> waves = new List<GameObject>();
+  private float waveCount;
 
   private void SetWaveSize(int i, float newSize) {
     waves[i].transform.localScale = new Vector3(newSize, newSize, 1);
@@ -28,7 +29,16 @@ public class SoundWaves : MonoBehaviour {
     }
   }
 
-  public void AddWaves(int addCount) {
+  public void AddWaveCount(float addCount) {
+    waveCount += addCount;
+    AddWaves((int)(waveCount - waves.Count));
+  }
+
+  private void AddWaves(int addCount) {
+    if (addCount == 0) {
+      return;
+    }
+
     ResetWaves();
     for (int i = 0; i < addCount; i++) {
       GameObject wave = Instantiate(Resources.Load(Constants.resourceWave), transform.position, Quaternion.identity) as GameObject;
@@ -40,7 +50,6 @@ public class SoundWaves : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-    AddWaves(5);
   }
 	
 	// Update is called once per frame
