@@ -25,19 +25,19 @@ public class Constants : MonoBehaviour {
   public static readonly string[] enemiesRandomLines = {
     "Why did we buy a house this big?!",
     "The house sure is quiet today.",
-    "I just hope I won't have to go up those bloody stairs today.",
+    "I just hope I won't have to go\nup those bloody stairs today.",
     "Brrrr... we should think about heating..."
   };
   public static readonly string[] enemiesRandomLinesAlerted = {
     "I keep hearing some weird sounds...",
     "Did I forget to turn off the TV?",
-    "Hmm... I thought I heard something. Must've been the wind.",
+    "Hmm... I thought I heard something.\nMust've been the wind.",
     "What's that weird sound?",
     "Hmm..."
   };
   public static readonly string[] enemiesRandomLinesMad = {
     "AHA! I KNEW IT!",
-    "PREPARE TO GET HORNED!",
+    "I HEAR A THIEF!",
     "THIEF!!!",
     "CALL THE POLICE!"
   };
