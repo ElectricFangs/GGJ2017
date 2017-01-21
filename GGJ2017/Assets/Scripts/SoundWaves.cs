@@ -34,6 +34,15 @@ public class SoundWaves : MonoBehaviour {
     AddWaves((int)(waveCount - waves.Count));
   }
 
+  public void SetWaveCount(float setCount) {
+    foreach (GameObject wave in waves) {
+      Destroy(wave);
+    }
+    waves.Clear();
+    waveCount = setCount;
+    AddWaveCount(0);
+  }
+
   private void AddWaves(int addCount) {
     if (addCount == 0) {
       return;
@@ -54,7 +63,7 @@ public class SoundWaves : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-    float radiusAdd = Time.deltaTime * Constants.wavesSpeed;
+    float radiusAdd = Time.deltaTime * (Constants.wavesSpeed);
     for (int i = 0; i < waves.Count; i++) {
       float newSize = waves[i].transform.localScale.x + radiusAdd;
       if (newSize >= waves.Count * Constants.wavesSizeIncrement) {

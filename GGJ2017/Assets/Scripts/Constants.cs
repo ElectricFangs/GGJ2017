@@ -14,20 +14,47 @@ public class Constants : MonoBehaviour {
 
   public const float playerDefaultWaves = 1;
 
-  public const float wavesSizeIncrement = 0.15f;
-  public const float wavesSpeed = 0.05f;
+  public const float wavesSizeIncrement = 0.30f;
+  public const float wavesSpeed = 0.15f;
 
   public const float enemiesMaxAlert = 5;
-  public const float enemiesAlertDecay = 0.3f;
+  public const float enemiesAlertDecay = 0.25f;
   public const float enemiesAlertPerWave = 1.0f;
   public const float enemiesSpeedUnit = 0.1f;
+  public const float enemiesSpeechDuration = 1.5f;
+  public static readonly string[] enemiesRandomLines = {
+    "Why did we buy a house this big?!",
+    "The house sure is quiet today.",
+    "I just hope I won't have to go up those bloody stairs today.",
+    "Brrrr... we should think about heating..."
+  };
+  public static readonly string[] enemiesRandomLinesAlerted = {
+    "I keep hearing some weird sounds...",
+    "Did I forget to turn off the TV?",
+    "Hmm... I thought I heard something. Must've been the wind.",
+    "What's that weird sound?",
+    "Hmm..."
+  };
+  public static readonly string[] enemiesRandomLinesMad = {
+    "AHA! I KNEW IT!",
+    "PREPARE TO GET HORNED!",
+    "THIEF!!!",
+    "CALL THE POLICE!"
+  };
 
   public const string resourceWave = "Wave";
 
   public const string tagsWave = "Wave";
   public const string tagsItem = "Item";
+  public const string tagsFloorOrigin = "Floor origin";
+  public const string tagsMinimapOrigin = "Minimap origin";
+  public const string tagsFloorDimensions = "FloorDimensions";
+  public const string tagsMinimapFloorDimensions = "MinimapDimensions";
+  public const string tagsMinimapCamera = "MinimapCamera";
+  public const string tagsMainCameraFade = "MainCameraFade";
 
   public const string namesNotificationsObject = "Notifications";
+  public const string namesLocationManager = "LocationManager";
 
   public const float eps = 0.01f;
 

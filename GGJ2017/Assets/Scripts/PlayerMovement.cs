@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
 
+  public bool playerMoving;
+  public Vector2 lastVelocity;
   private Rigidbody2D playerRigidbody;
   private PlayerBehavior playerBehavior;
 
   public void SetVelocity(Vector2 velocity) {
     playerRigidbody.velocity = velocity;
+    lastVelocity = velocity;
+    playerMoving = velocity.magnitude > 0;
   }
 
   void OnCollisionEnter2D(Collision2D collision) {
@@ -20,6 +24,18 @@ public class PlayerMovement : MonoBehaviour {
   void OnCollisionExit2D(Collision2D collision) {
     if (collision.gameObject.GetComponent<InteractableObject>() != null) {
       playerBehavior.nearbyObjects.Remove(collision.gameObject);
+    }
+  }
+
+  void OnTriggerEnter2D(Collider2D other) {
+    if (other.gameObject.GetComponent<InteractableObject>() != null) {
+      playerBehavior.nearbyObjects.Add(other.gameObject);
+    }
+  }
+
+  void OnTriggerExit2D(Collider2D other) {
+    if (other.gameObject.GetComponent<InteractableObject>() != null) {
+      playerBehavior.nearbyObjects.Remove(other.gameObject);
     }
   }
 

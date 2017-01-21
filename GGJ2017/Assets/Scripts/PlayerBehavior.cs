@@ -8,7 +8,23 @@ public class PlayerBehavior : MonoBehaviour {
   public List<GameObject> carryingItems = new List<GameObject>();
   public bool isBusy = false;
 
+  public int score;
+  public int lastHaulScore;
+
   private SoundWaves playerWaves;
+
+  public void ScoreLoot() {
+    lastHaulScore = 0;
+    foreach (GameObject loot in carryingItems) {
+      lastHaulScore += loot.GetComponent<Item>().value;
+    }
+    carryingItems.Clear();
+    playerWaves.SetWaveCount(Constants.playerDefaultWaves);
+
+    // TODO ui prompt continue / stop
+
+    score += lastHaulScore;
+  }
 
   // Use this for initialization
   void Start () {

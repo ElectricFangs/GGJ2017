@@ -21,6 +21,8 @@ public class EnemyBehavior : MonoBehaviour {
   public Sprite spriteMadNotification;
   private GameObject objectMadNotification;
 
+  private SpeechBubbleHandler speechHandler;
+
   void OnTriggerEnter2D(Collider2D other) {
     if (other.tag == Constants.tagsWave) {
       collidingWavesCount++;
@@ -40,6 +42,7 @@ public class EnemyBehavior : MonoBehaviour {
 
     currentMarker = startMarker;
     enemyRigidbody = GetComponent<Rigidbody2D>();
+    speechHandler = GetComponent<SpeechBubbleHandler>();
 	}
 
   // Update is called once per frame
@@ -67,9 +70,13 @@ public class EnemyBehavior : MonoBehaviour {
         enemyRigidbody.velocity = new Vector2(0, 0);
         standingStill = true;
         lastMarker = currentMarker;
+        SpeakLine();
         StartCoroutine(WaitAtMarker(currentMarker.waitTime));
       } else {
-        lastMarker = currentMarker;
+        if (lastMarker != currentMarker) {
+          lastMarker = currentMarker;
+          SpeakLine();
+        }
         currentMarker = currentMarker.nextMarker;
         if (currentMarker != null) {
           Vector3 moveDirection = (currentMarker.transform.position - transform.position).normalized;
@@ -79,6 +86,24 @@ public class EnemyBehavior : MonoBehaviour {
       }
     }
 	}
+
+  private void SpeakLine() {
+    if (speechHandler == null) {
+      return;
+    }
+    string text = currentMarker.speechLine;
+    if (currentMarker.useRandomSpeech) {
+      if (currentAlert < Constants.enemiesMaxAlert / 2.0f) {
+        text = Constants.enemiesRandomLines[Random.Range(0, Constants.enemiesRandomLines.Length)];
+      } else {
+        text = Constants.enemiesRandomLinesAlerted[Random.Range(0, Constants.enemiesRandomLinesAlerted.Length)];
+      }
+    }
+
+    if (!string.IsNullOrEmpty(text)) {
+      speechHandler.Speak(text);
+    }
+  }
 
   IEnumerator WaitAtMarker(float waitTime) {
     yield return new WaitForSeconds(waitTime);
