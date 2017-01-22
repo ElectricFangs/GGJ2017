@@ -13,6 +13,14 @@ public class PlayerBehavior : MonoBehaviour {
 
   private SoundWaves playerWaves;
 
+  public void Speak(string text) {
+    GetComponent<SpeechBubbleHandler>().Speak(text);
+  }
+
+  public void StopSpeak() {
+    GetComponent<SpeechBubbleHandler>().StopSpeak();
+  }
+
   public void ScoreLoot() {
     lastHaulScore = 0;
     foreach (GameObject loot in carryingItems) {
@@ -20,10 +28,9 @@ public class PlayerBehavior : MonoBehaviour {
     }
     carryingItems.Clear();
     playerWaves.SetWaveCount(Constants.playerDefaultWaves);
-
-    // TODO ui prompt continue / stop
-
     score += lastHaulScore;
+
+    Speak(Constants.textHadEnough[0] + lastHaulScore + Constants.textHadEnough[1] + score + Constants.textHadEnough[2]);
   }
 
   // Use this for initialization

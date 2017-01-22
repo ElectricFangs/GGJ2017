@@ -8,11 +8,19 @@ public class GameManager : MonoBehaviour {
 
   public GameObject prompt;
 
-  public void EndGame(int totalScore) {
+  public void EndGame(int totalScore, bool won = false) {
     Time.timeScale = 0;
     prompt.SetActive(true);
     Text text = prompt.GetComponentInChildren<Text>();
-    text.text = Constants.textEndGame[0] + totalScore + Constants.textEndGame[1];
+    if (!won) {
+      text.text = Constants.textEndGame[0] + totalScore + Constants.textEndGame[1];
+    } else {
+      text.text = Constants.textEndGameWon[0] + totalScore + Constants.textEndGameWon[1];
+    }
+  }
+
+  public void EndGameWon() {
+    EndGame(GameObject.Find("Player").GetComponent<PlayerBehavior>().score, true);
   }
 
   public void RestartGame() {
@@ -22,7 +30,7 @@ public class GameManager : MonoBehaviour {
   }
 
   public void QuitGame() {
-    UnityEditor.EditorApplication.isPlaying = false;
+   // UnityEditor.EditorApplication.isPlaying = false;
     Application.Quit();
   }
 

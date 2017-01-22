@@ -12,17 +12,17 @@ public class Constants : MonoBehaviour {
   public const float movementPlayerSpeedUnit = 0.5f;
   public const float movementPlayerWeightFactor = 0.01f;
 
-  public const float playerDefaultWaves = 1;
+  public const float playerDefaultWaves = 2;
 
-  public const float wavesSizeIncrement = 0.30f;
+  public const float wavesSizeIncrement = 0.2f;
   public const float wavesSpeed = 0.15f;
 
-  public const float enemiesMaxAlert = 5;
-  public const float enemiesAlertDecay = 0.25f;
+  public const float enemiesMaxAlert = 2.5f;
+  public const float enemiesAlertDecay = 0.15f;
   public const float enemiesAlertPerWave = 1.0f;
   public const float enemiesSpeedUnit = 0.1f;
   public const float enemiesFlySpeedUnit = 0.6f;
-  public const float enemiesSpeechDuration = 1.5f;
+  public const float enemiesSpeechDuration = 2.5f;
   public const float enemiesMadIdleDuration = 0.5f;
   public static readonly string[] enemiesRandomLines = {
     "Why did we buy a house this big?!",
@@ -57,7 +57,9 @@ public class Constants : MonoBehaviour {
   public const string tagsPlayer = "Player";
   public const string tagsEnemy = "Enemy";
 
-  public static readonly string[] textEndGame = { "You were caught! If not, you would have walked away with ", " $ worth of loot!\nTry again?"};
+  public static readonly string[] textEndGame = {"You were caught! If not, you would have walked away with ", " $ worth of loot!\nTry again?"};
+  public static readonly string[] textEndGameWon = { "You walked away with $", " worth of loot!\nWanna visit another house?" };
+  public static readonly string[] textHadEnough = {"Last haul: $", " , total: $", ". Stop?"};
 
   public const string namesNotificationsObject = "Notifications";
   public const string namesLocationManager = "LocationManager";

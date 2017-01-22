@@ -9,8 +9,8 @@ public class Door : InteractableObject {
   public override IEnumerator Interact(GameObject player) {
     PlayerBehavior playerBehavior = player.GetComponent<PlayerBehavior>();
     playerBehavior.isBusy = true;
-    yield return new WaitForSeconds(scoreLootDuration);
     playerBehavior.ScoreLoot();
+    yield return new WaitForSeconds(scoreLootDuration);
     playerBehavior.isBusy = false;
   }
 

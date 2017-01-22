@@ -6,6 +6,7 @@ using UnityEngine;
 public class SpeechBubbleHandler : MonoBehaviour {
 
   public SpeechBubble bubbleObject;
+  public GameObject handle;
   private float bubbleDuration;
 
 	// Use this for initialization
@@ -21,9 +22,14 @@ public class SpeechBubbleHandler : MonoBehaviour {
     }
 	}
 
-  public void Speak(string text) {
-    bubbleDuration = Constants.enemiesSpeechDuration;
+  public void Speak(string text, float duration = 15000) {
+    bubbleDuration = duration;
     bubbleObject.GetComponentInChildren<Text>().text = text;
     bubbleObject.gameObject.SetActive(true);
+  }
+
+  public void StopSpeak() {
+    bubbleDuration = 0;
+    bubbleObject.gameObject.SetActive(false);
   }
 }

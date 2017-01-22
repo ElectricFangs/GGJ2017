@@ -15,6 +15,8 @@ public class EnemyBehavior : MonoBehaviour {
   public bool standingStill;
   public CircleCollider2D movingCollider;
   public BoxCollider2D interactCollider;
+  public AlertBar alertBar;
+  public Canvas alertCanvas;
   private Marker currentMarker;
   private Marker lastMarker;
   private Rigidbody2D enemyRigidbody;
@@ -73,6 +75,12 @@ public class EnemyBehavior : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
+    if (state != EnemyState.ES_DEFAULT) {
+      alertCanvas.gameObject.SetActive(false);
+    } else {
+      alertBar.SetAlert(currentAlert / Constants.enemiesMaxAlert);
+    }
+
     if (state == EnemyState.ES_DEFAULT && collidingWavesCount > 0) {
       currentAlert += collidingWavesCount * Constants.enemiesAlertPerWave * Time.deltaTime;
       if (currentAlert >= Constants.enemiesMaxAlert) {
@@ -134,7 +142,7 @@ public class EnemyBehavior : MonoBehaviour {
     }
 
     if (!string.IsNullOrEmpty(text)) {
-      speechHandler.Speak(text);
+      speechHandler.Speak(text, Constants.enemiesSpeechDuration);
     }
   }
 

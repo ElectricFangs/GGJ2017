@@ -26,6 +26,10 @@ public class PlayerMovement : MonoBehaviour {
     playerRigidbody.velocity = velocity;
     lastVelocity = velocity;
     playerMoving = velocity.magnitude > 0;
+
+    if (playerMoving && !playerBehavior.isBusy) {
+      playerBehavior.StopSpeak();
+    }
   }
 
   void OnCollisionEnter2D(Collision2D collision) {
