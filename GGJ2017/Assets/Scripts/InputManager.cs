@@ -24,39 +24,54 @@ public class InputManager : MonoBehaviour {
 
     if (keyboardMovementEnabled) {
       Vector2 velocity = new Vector2(0, 0);
+      float currentSpeed = playerMovement.GetPlayerSpeed();
       if (Input.GetKey(Constants.controlsLeft)) {
-        velocity.x = -playerMovement.GetPlayerSpeed();
+        velocity.x = -currentSpeed;
       }
       else if (Input.GetKey(Constants.controlsRight)) {
-        velocity.x = playerMovement.GetPlayerSpeed();
+        velocity.x = currentSpeed;
       }
       if (Input.GetKey(Constants.controlsUp)) {
-        velocity.y = playerMovement.GetPlayerSpeed();
+        velocity.y = currentSpeed;
       }
       else if (Input.GetKey(Constants.controlsDown)) {
-        velocity.y = -playerMovement.GetPlayerSpeed();
+        velocity.y = -currentSpeed;
+      }
+      if (Mathf.Abs(velocity.magnitude - currentSpeed) > Constants.eps) {
+        velocity /= 2;
       }
       playerMovement.SetVelocity(velocity);
     }
 
-    if (Input.GetMouseButtonDown(0)) {
-      bool clickHandled = false;
+    if (Input.GetMouseButtonUp(1)) {
       Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
       RaycastHit2D[] hits;
       hits = Physics2D.RaycastAll(ray.origin, ray.direction, Mathf.Infinity);
+      GameObject topClickedObject = null;
+      int topClickedOrder = -1000;
       foreach (RaycastHit2D hit in hits) {
-        if (hit.collider != null && playerBehavior.nearbyObjects.Contains(hit.collider.gameObject)) {
-          clickHandled = true;
-          StartCoroutine(hit.collider.gameObject.GetComponent<InteractableObject>().Interact(playerBehavior.gameObject));
-          break;
+        if (hit.collider != null && playerBehavior.nearbyObjects.Contains(hit.collider.gameObject) &&
+          (topClickedObject == null || hit.collider.gameObject.GetComponent<SpriteRenderer>().sortingOrder > topClickedOrder)) {
+          topClickedObject = hit.collider.gameObject;
+          topClickedOrder = topClickedObject.GetComponent<SpriteRenderer>().sortingOrder;
         }
       }
-      if (!clickHandled && !keyboardMovementEnabled) {
-        Vector3 directionNorm = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - playerMovement.transform.position).normalized;
-        if (directionNorm.magnitude > Constants.eps) {
+      if (topClickedObject != null) {
+        StartCoroutine(topClickedObject.GetComponent<InteractableObject>().Interact(playerBehavior.gameObject));
+      }
+    }
+
+    if (!keyboardMovementEnabled) {
+      if (Input.GetMouseButton(0)) {
+        Vector3 direction = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10)) - playerMovement.transform.position;
+        if (direction.magnitude > Constants.eps) {
           float currentSpeed = playerMovement.GetPlayerSpeed();
-          playerMovement.SetVelocity(new Vector2(directionNorm.x * currentSpeed, directionNorm.y * currentSpeed));
+          playerMovement.SetVelocity(new Vector2(direction.normalized.x * currentSpeed, direction.normalized.y * currentSpeed));
+        } else {
+          playerMovement.SetVelocity(new Vector2(0, 0));
         }
+      } else {
+        playerMovement.SetVelocity(new Vector2(0, 0));
       }
     }
   }

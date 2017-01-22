@@ -10,14 +10,17 @@ public class Item : InteractableObject {
 
   private float fadeStart;
   private float fadeDuration;
-  private SpriteRenderer renderer;
+  private SpriteRenderer spriteRenderer;
 
   public override IEnumerator Interact(GameObject player) {
     PlayerBehavior playerBehavior = player.GetComponent<PlayerBehavior>();
+    Animator playerAnimator = player.GetComponent<Animator>();
     SoundWaves playerWaves = player.GetComponent<SoundWaves>();
 
     playerBehavior.isBusy = true;
+    playerAnimator.SetBool("isUsing", true);
     FadeOut(pickupTime);
+    player.GetComponent<AudioSource>().PlayOneShot(GameObject.Find("Managers").GetComponent<SoundManager>().GetQuietLaughSound());
 
     yield return new WaitForSeconds(pickupTime);
 
@@ -26,6 +29,7 @@ public class Item : InteractableObject {
     gameObject.SetActive(false);
 
     playerBehavior.isBusy = false;
+    playerAnimator.SetBool("isUsing", false);
   }
 
   private void FadeOut(float duration) {
@@ -34,14 +38,14 @@ public class Item : InteractableObject {
 
 	// Use this for initialization
 	void Start () {
-    renderer = GetComponent<SpriteRenderer>();
+    spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
     fadeDuration = Mathf.Max(-1, fadeDuration - Time.deltaTime);
     if (fadeStart > 0) {
-      renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, fadeDuration / fadeStart);
+      spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, fadeDuration / fadeStart);
     }
 	}
 }

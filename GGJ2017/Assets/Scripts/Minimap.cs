@@ -35,7 +35,8 @@ public class Minimap : MonoBehaviour {
     foreach (MinimapMarker child in children) {
       Vector3 positionRatio = locationManager.GetFloorLocation(child.trackTarget);
       Vector3 positionMinimapFloor = minimapOrigins[(int)positionRatio[2]].transform.position + new Vector3(floorDimensions.x * positionRatio.x, floorDimensions.y * positionRatio.y, 0);
-      child.transform.Translate(positionMinimapFloor - child.transform.position);
+      Vector3 direction = positionMinimapFloor - child.transform.position;
+      child.transform.Translate(direction);
     }
 	}
 }
