@@ -21,6 +21,7 @@ public class Constants : MonoBehaviour {
   public const float enemiesAlertDecay = 0.25f;
   public const float enemiesAlertPerWave = 1.0f;
   public const float enemiesSpeedUnit = 0.1f;
+  public const float enemiesFlySpeedUnit = 0.6f;
   public const float enemiesSpeechDuration = 1.5f;
   public const float enemiesMadIdleDuration = 0.5f;
   public static readonly string[] enemiesRandomLines = {
@@ -53,6 +54,10 @@ public class Constants : MonoBehaviour {
   public const string tagsMinimapFloorDimensions = "MinimapDimensions";
   public const string tagsMinimapCamera = "MinimapCamera";
   public const string tagsMainCameraFade = "MainCameraFade";
+  public const string tagsPlayer = "Player";
+  public const string tagsEnemy = "Enemy";
+
+  public static readonly string[] textEndGame = { "You were caught! If not, you would have walked away with ", " $ worth of loot!\nTry again?"};
 
   public const string namesNotificationsObject = "Notifications";
   public const string namesLocationManager = "LocationManager";

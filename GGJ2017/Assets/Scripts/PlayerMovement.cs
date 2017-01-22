@@ -37,7 +37,13 @@ public class PlayerMovement : MonoBehaviour {
 
   void OnTriggerEnter2D(Collider2D other) {
     if (other.gameObject.GetComponent<InteractableObject>() != null) {
-      playerBehavior.nearbyObjects.Add(other.gameObject);
+      if (!playerBehavior.isBusy && other.gameObject.GetComponent<Stairs>() != null) {
+        StartCoroutine(other.gameObject.GetComponent<Stairs>().Interact(gameObject));
+      } else if (!playerBehavior.isBusy && other.gameObject.GetComponent<Door>() != null) {
+        StartCoroutine(other.gameObject.GetComponent<Door>().Interact(gameObject));
+      } else {
+        playerBehavior.nearbyObjects.Add(other.gameObject);
+      }
     }
   }
 

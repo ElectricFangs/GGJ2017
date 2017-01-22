@@ -13,11 +13,14 @@ public class EnemyBehavior : MonoBehaviour {
   public EnemyState state = EnemyState.ES_DEFAULT;
   public Marker startMarker;
   public bool standingStill;
+  public CircleCollider2D movingCollider;
+  public BoxCollider2D interactCollider;
   private Marker currentMarker;
   private Marker lastMarker;
   private Rigidbody2D enemyRigidbody;
   private Animator enemyAnimator;
   private SpriteRenderer enemyRenderer;
+  private GameObject playerTarget;
 
   public int collidingWavesCount = 0;
 
@@ -32,9 +35,26 @@ public class EnemyBehavior : MonoBehaviour {
     }
   }
 
+  void OnTriggerStay2D(Collider2D other) {
+    if (other.tag == Constants.tagsPlayer) {
+      TouchedPlayer(playerTarget.GetComponent<PlayerBehavior>());
+    }
+  }
+
   void OnTriggerExit2D(Collider2D other) {
     if (other.tag == Constants.tagsWave) {
       collidingWavesCount--;
+    }
+  }
+
+  public void TouchedPlayer(PlayerBehavior playerBehavior) {
+    if (state == EnemyState.ES_MAD_FLY) {
+      playerBehavior.isBusy = true;
+      GameObject.Find("Managers").GetComponent<GameManager>().EndGame(playerBehavior.score);
+    } else if (state == EnemyState.ES_DEFAULT) {
+      currentAlert = Constants.enemiesMaxAlert;
+      state = EnemyState.ES_MAD_IDLE;
+      StartCoroutine(GetMad());
     }
   }
 
@@ -48,6 +68,7 @@ public class EnemyBehavior : MonoBehaviour {
     enemyAnimator = GetComponent<Animator>();
     enemyRenderer = GetComponent<SpriteRenderer>();
     speechHandler = GetComponent<SpeechBubbleHandler>();
+    playerTarget = GameObject.FindGameObjectWithTag(Constants.tagsPlayer);
 	}
 
   // Update is called once per frame
@@ -69,7 +90,7 @@ public class EnemyBehavior : MonoBehaviour {
         Vector3 moveDirection = (currentMarker.transform.position - transform.position).normalized;
         float length = moveDirection.magnitude;
         enemyRigidbody.velocity = new Vector2(moveDirection.x / length * Constants.enemiesSpeedUnit, moveDirection.y / length * Constants.enemiesSpeedUnit);
-      // this marker requires waiting and we didn't already wait at this marker
+        // this marker requires waiting and we didn't already wait at this marker
       } else if (currentMarker.waitTime > 0 && currentMarker != lastMarker) {
         enemyRigidbody.velocity = new Vector2(0, 0);
         standingStill = true;
@@ -91,6 +112,11 @@ public class EnemyBehavior : MonoBehaviour {
       enemyAnimator.SetBool("isWalking", !standingStill);
       float dirX = (currentMarker.transform.position - transform.position).x;
       enemyRenderer.flipX = dirX < 0;
+      movingCollider.offset = new Vector2((enemyRenderer.flipX ? -0.02f : 0.02f), movingCollider.offset.y);
+    } else if (state == EnemyState.ES_MAD_FLY) {
+      Vector3 moveDirection = (playerTarget.transform.position - transform.position).normalized;
+      enemyRigidbody.velocity = new Vector2(moveDirection.x * Constants.enemiesFlySpeedUnit, moveDirection.y * Constants.enemiesFlySpeedUnit);
+      enemyRenderer.flipX = moveDirection.x < 0;
     }
 	}
 
@@ -118,7 +144,14 @@ public class EnemyBehavior : MonoBehaviour {
     objectMadNotification.GetComponent<SpriteRenderer>().sprite = spriteMadNotification;
     objectMadNotification.SetActive(true);
     GetComponent<AudioSource>().PlayOneShot(GameObject.Find("Managers").GetComponent<SoundManager>().GetGaspSound());
+    enemyRenderer.flipX = (playerTarget.transform.position - transform.position).x < 0;
+
     yield return new WaitForSeconds(Constants.enemiesMadIdleDuration);
+
+    movingCollider.enabled = false;
+    interactCollider.enabled = true;
+    state = EnemyState.ES_MAD_FLY;
+    enemyAnimator.SetInteger("State", (int)state);
   }
 
   IEnumerator WaitAtMarker(float waitTime) {
