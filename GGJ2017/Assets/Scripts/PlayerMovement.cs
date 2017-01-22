@@ -6,14 +6,21 @@ public class PlayerMovement : MonoBehaviour {
 
   public bool playerMoving;
   public Vector2 lastVelocity;
+  public CircleCollider2D playerHandsCollider;
+  public CircleCollider2D playerWalkingCollider;
 
   private Rigidbody2D playerRigidbody;
   private PlayerBehavior playerBehavior;
   private AudioSource playerAudio;
   private Animator playerAnimator;
   private SpriteRenderer playerRenderer;
-  private CircleCollider2D playerHandsCollider;
   private SoundManager soundManager;
+
+  public void SetFlipX(bool flipX) {
+    playerRenderer.flipX = flipX;
+    playerHandsCollider.offset = new Vector2((flipX ? -0.08f : 0.08f), playerHandsCollider.offset.y);
+    playerWalkingCollider.offset = new Vector2((flipX ? -0.03f : 0.03f), playerWalkingCollider.offset.y);
+  }
 
   public void SetVelocity(Vector2 velocity) {
     playerRigidbody.velocity = velocity;
@@ -22,16 +29,10 @@ public class PlayerMovement : MonoBehaviour {
   }
 
   void OnCollisionEnter2D(Collision2D collision) {
-    if (collision.gameObject.GetComponent<InteractableObject>() != null) {
-      playerBehavior.nearbyObjects.Add(collision.gameObject);
-    }
     SetVelocity(new Vector2(0, 0));
   }
 
   void OnCollisionExit2D(Collision2D collision) {
-    if (collision.gameObject.GetComponent<InteractableObject>() != null) {
-      playerBehavior.nearbyObjects.Remove(collision.gameObject);
-    }
   }
 
   void OnTriggerEnter2D(Collider2D other) {
@@ -67,7 +68,6 @@ public class PlayerMovement : MonoBehaviour {
     playerAudio = GetComponent<AudioSource>();
     playerAnimator = GetComponent<Animator>();
     playerRenderer = GetComponent<SpriteRenderer>();
-    playerHandsCollider = GetComponent<CircleCollider2D>();
     soundManager = GameObject.Find("Managers").GetComponent<SoundManager>();
   }
 	
@@ -78,8 +78,6 @@ public class PlayerMovement : MonoBehaviour {
       if (!playerAudio.isPlaying) {
         playerAudio.PlayOneShot(soundManager.GetLoudStepSound());
       }
-      playerRenderer.flipX = playerRigidbody.velocity.x < 0;
-      playerHandsCollider.offset = new Vector2((playerRenderer.flipX ? -0.08f : 0.08f), playerHandsCollider.offset.y);
     } else {
       playerAnimator.SetBool("isWalking", false);
     }

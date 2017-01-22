@@ -70,6 +70,11 @@ public class InputManager : MonoBehaviour {
         } else {
           playerMovement.SetVelocity(new Vector2(0, 0));
         }
+        if (direction.x > 0) {
+          playerMovement.SetFlipX(false);
+        } else if (direction.x < 0) {
+          playerMovement.SetFlipX(true);
+        }
       } else {
         playerMovement.SetVelocity(new Vector2(0, 0));
       }

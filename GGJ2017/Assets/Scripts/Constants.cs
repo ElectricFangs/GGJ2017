@@ -22,6 +22,7 @@ public class Constants : MonoBehaviour {
   public const float enemiesAlertPerWave = 1.0f;
   public const float enemiesSpeedUnit = 0.1f;
   public const float enemiesSpeechDuration = 1.5f;
+  public const float enemiesMadIdleDuration = 0.5f;
   public static readonly string[] enemiesRandomLines = {
     "Why did we buy a house this big?!",
     "The house sure is quiet today.",

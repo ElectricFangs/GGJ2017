@@ -5,7 +5,8 @@ using UnityEngine;
 public class EnemyBehavior : MonoBehaviour {
   public enum EnemyState {
     ES_DEFAULT,
-    ES_MAD
+    ES_MAD_IDLE,
+    ES_MAD_FLY
   }
 
   public float currentAlert = 0;
@@ -15,6 +16,8 @@ public class EnemyBehavior : MonoBehaviour {
   private Marker currentMarker;
   private Marker lastMarker;
   private Rigidbody2D enemyRigidbody;
+  private Animator enemyAnimator;
+  private SpriteRenderer enemyRenderer;
 
   public int collidingWavesCount = 0;
 
@@ -42,18 +45,19 @@ public class EnemyBehavior : MonoBehaviour {
 
     currentMarker = startMarker;
     enemyRigidbody = GetComponent<Rigidbody2D>();
+    enemyAnimator = GetComponent<Animator>();
+    enemyRenderer = GetComponent<SpriteRenderer>();
     speechHandler = GetComponent<SpeechBubbleHandler>();
 	}
 
   // Update is called once per frame
   void Update() {
-    if (collidingWavesCount > 0) {
+    if (state == EnemyState.ES_DEFAULT && collidingWavesCount > 0) {
       currentAlert += collidingWavesCount * Constants.enemiesAlertPerWave * Time.deltaTime;
       if (currentAlert >= Constants.enemiesMaxAlert) {
         currentAlert = Constants.enemiesMaxAlert;
-        state = EnemyState.ES_MAD;
-        objectMadNotification.GetComponent<SpriteRenderer>().sprite = spriteMadNotification;
-        objectMadNotification.SetActive(true);
+        state = EnemyState.ES_MAD_IDLE;
+        StartCoroutine(GetMad());
       }
     } else if (state == EnemyState.ES_DEFAULT) {
       currentAlert = Mathf.Max(0, currentAlert - Constants.enemiesAlertDecay * Time.deltaTime);
@@ -84,6 +88,9 @@ public class EnemyBehavior : MonoBehaviour {
           enemyRigidbody.velocity = new Vector2(moveDirection.x / length * Constants.enemiesSpeedUnit, moveDirection.y / length * Constants.enemiesSpeedUnit);
         }
       }
+      enemyAnimator.SetBool("isWalking", !standingStill);
+      float dirX = (currentMarker.transform.position - transform.position).x;
+      enemyRenderer.flipX = dirX < 0;
     }
 	}
 
@@ -103,6 +110,15 @@ public class EnemyBehavior : MonoBehaviour {
     if (!string.IsNullOrEmpty(text)) {
       speechHandler.Speak(text);
     }
+  }
+
+  IEnumerator GetMad() {
+    enemyRigidbody.velocity = new Vector2(0, 0);
+    enemyAnimator.SetInteger("State", (int)state);
+    objectMadNotification.GetComponent<SpriteRenderer>().sprite = spriteMadNotification;
+    objectMadNotification.SetActive(true);
+    GetComponent<AudioSource>().PlayOneShot(GameObject.Find("Managers").GetComponent<SoundManager>().GetGaspSound());
+    yield return new WaitForSeconds(Constants.enemiesMadIdleDuration);
   }
 
   IEnumerator WaitAtMarker(float waitTime) {
